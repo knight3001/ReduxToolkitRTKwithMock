@@ -1,12 +1,7 @@
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  Spacer,
-} from "@chakra-ui/react";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Box from "@material-ui/core/Box";
 import React, { useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -48,35 +43,43 @@ const AddPost = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Flex p={5}>
-        <Box flex={10}>
-          <FormControl
-            isInvalid={Boolean(!!watch("name") && watch("name").length < 3)}
-          >
-            <FormLabel htmlFor="name">Post name</FormLabel>
+      <Box p={1.25} display="flex">
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item xs={11}>
             <Controller
               name="name"
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <Input {...field} placeholder="Enter post name" />
+                <TextField
+                  {...field}
+                  fullWidth
+                  placeholder="Enter post name"
+                  label="Post name"
+                  variant="outlined"
+                  error={Boolean(!!watch("name") && watch("name").length < 3)}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
               )}
             />
-            <p>{errors.name?.message}</p>
-          </FormControl>
-        </Box>
-        <Spacer />
-        <Box>
-          <Button
-            mt={8}
-            colorScheme="purple"
-            isLoading={isLoading}
-            type="submit"
-          >
-            Add Post
-          </Button>
-        </Box>
-      </Flex>
+            <p style={{ display: errors.name ? "block" : "none" }}>
+              {errors.name?.message}
+            </p>
+          </Grid>
+          <Grid item xs={1}>
+            <Button
+              variant="contained"
+              color="secondary"
+              disabled={isLoading}
+              type="submit"
+            >
+              Add Post
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
     </form>
   );
 };

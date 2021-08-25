@@ -1,7 +1,6 @@
 // @flow
 import React, { ReactNode } from "react";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
-import { ChakraProvider } from "@chakra-ui/react";
 
 import { myTheme } from "../styles/themes";
 
@@ -10,11 +9,7 @@ type TemplatePropsType = {
 };
 
 function Template(props: TemplatePropsType) {
-  return (
-    <ChakraProvider>
-      <MuiThemeProvider theme={myTheme}>{props.children}</MuiThemeProvider>
-    </ChakraProvider>
-  );
+  return <MuiThemeProvider theme={myTheme}>{props.children}</MuiThemeProvider>;
 }
 
 export default Template;

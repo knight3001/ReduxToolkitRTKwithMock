@@ -1,22 +1,26 @@
-import React, { useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import React, { useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import {
   useDeletePostMutation,
   useGetPostQuery,
   useUpdatePostMutation,
-} from '../../app/services/posts'
-import {
-  Box,
-  Button,
-  Center,
-  CloseButton,
-  Flex,
-  Heading,
-  Input,
-  Spacer,
-  Stack,
-  useToast,
-} from '@chakra-ui/react'
+} from "../../app/services/posts";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import TextField from "@material-ui/core/TextField";
+import CloseIcon from "@material-ui/icons/Close";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
+
+import StyledButton from "../../app/components/StyledButton";
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const EditablePostName = ({
   name: initialName,
@@ -24,130 +28,149 @@ const EditablePostName = ({
   onCancel,
   isLoading = false,
 }: {
-  name: string
-  onUpdate: (name: string) => void
-  onCancel: () => void
-  isLoading?: boolean
+  name: string;
+  onUpdate: (name: string) => void;
+  onCancel: () => void;
+  isLoading?: boolean;
 }) => {
-  const [name, setName] = useState(initialName)
+  const [name, setName] = useState(initialName);
 
   const handleChange = ({
     target: { value },
-  }: React.ChangeEvent<HTMLInputElement>) => setName(value)
+  }: React.ChangeEvent<HTMLInputElement>) => setName(value);
 
-  const handleUpdate = () => onUpdate(name)
-  const handleCancel = () => onCancel()
+  const handleUpdate = () => onUpdate(name);
+  const handleCancel = () => onCancel();
 
   return (
-    <Flex>
-      <Box flex={10}>
-        <Input
-          type="text"
+    <>
+      <Grid item xs={10}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          disabled={isLoading}
           onChange={handleChange}
           value={name}
-          disabled={isLoading}
         />
-      </Box>
-      <Spacer />
-      <Box>
-        <Stack spacing={4} direction="row" align="center">
-          <Button onClick={handleUpdate} isLoading={isLoading}>
-            Update
-          </Button>
-          <CloseButton bg="red" onClick={handleCancel} disabled={isLoading} />
-        </Stack>
-      </Box>
-    </Flex>
-  )
-}
+      </Grid>
+      <Grid item xs={2}>
+        <StyledButton
+          variant="contained"
+          mr={1}
+          onClick={handleUpdate}
+          disabled={isLoading}
+        >
+          Update
+        </StyledButton>
+        <IconButton
+          color="secondary"
+          onClick={handleCancel}
+          disabled={isLoading}
+        >
+          <CloseIcon />
+        </IconButton>
+      </Grid>
+    </>
+  );
+};
 
 const PostJsonDetail = ({ id }: { id: string }) => {
-  const { data: post } = useGetPostQuery(id)
+  const { data: post } = useGetPostQuery(id);
 
   return (
-    <Box mt={5} bg="#eee">
-      <pre>{JSON.stringify(post, null, 2)}</pre>
-    </Box>
-  )
-}
+    <Grid item xs={12}>
+      <Box mt={5} bgcolor="#eee">
+        <pre>{JSON.stringify(post, null, 2)}</pre>
+      </Box>
+    </Grid>
+  );
+};
 
 export const PostDetail = () => {
-  const { id } = useParams<{ id: any }>()
-  const { push } = useHistory()
+  const { id } = useParams<{ id: any }>();
+  const { push } = useHistory();
 
-  const toast = useToast()
+  const [isEditing, setIsEditing] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
-  const [isEditing, setIsEditing] = useState(false)
+  const { data: post, isLoading } = useGetPostQuery(id);
 
-  const { data: post, isLoading } = useGetPostQuery(id)
+  const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation();
 
-  const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation()
+  const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation();
 
-  const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation()
+  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   if (!post) {
     return (
-      <Center h="200px">
-        <Heading size="md">
+      <Box textAlign="center" height="200px">
+        <Typography variant="h5">
           Post {id} is missing! Try reloading or selecting another post...
-        </Heading>
-      </Center>
-    )
+        </Typography>
+      </Box>
+    );
   }
 
   return (
-    <Box p={4}>
-      {isEditing ? (
-        <EditablePostName
-          name={post.name}
-          onUpdate={async (name) => {
-            try {
-              await updatePost({ id, name }).unwrap()
-            } catch {
-              toast({
-                title: 'An error occurred',
-                description: "We couldn't save your changes, try again!",
-                status: 'error',
-                duration: 2000,
-                isClosable: true,
-              })
-            } finally {
-              setIsEditing(false)
-            }
-          }}
-          onCancel={() => setIsEditing(false)}
-          isLoading={isUpdating}
-        />
-      ) : (
-        <Flex>
-          <Box>
-            <Heading size="md">{post.name}</Heading>
-          </Box>
-          <Spacer />
-          <Box>
-            <Stack spacing={4} direction="row" align="center">
-              <Button
+    <>
+      <Grid container spacing={2} alignItems="center">
+        {isEditing ? (
+          <EditablePostName
+            name={post.name}
+            onUpdate={async (name) => {
+              try {
+                await updatePost({ id, name }).unwrap();
+              } catch {
+                setOpen(true);
+              } finally {
+                setIsEditing(false);
+              }
+            }}
+            onCancel={() => setIsEditing(false)}
+            isLoading={isUpdating}
+          />
+        ) : (
+          <>
+            <Grid item xs={8}>
+              <Typography variant="h5">{post.name}</Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <StyledButton
+                mr={1}
+                variant="contained"
                 onClick={() => setIsEditing(true)}
                 disabled={isDeleting || isUpdating}
               >
-                {isUpdating ? 'Updating...' : 'Edit'}
-              </Button>
+                {isUpdating ? "Updating..." : "Edit"}
+              </StyledButton>
               <Button
-                onClick={() => deletePost(id).then(() => push('/posts'))}
+                variant="contained"
+                onClick={() => deletePost(id).then(() => push("/posts"))}
                 disabled={isDeleting}
-                colorScheme="red"
+                color="secondary"
               >
-                {isDeleting ? 'Deleting...' : 'Delete'}
+                {isDeleting ? "Deleting..." : "Delete"}
               </Button>
-            </Stack>
-          </Box>
-        </Flex>
-      )}
-      <PostJsonDetail id={post.id} />
-    </Box>
-  )
-}
+            </Grid>
+          </>
+        )}
+        <PostJsonDetail id={post.id} />
+      </Grid>
+      <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          We couldn't save your changes, try again!
+        </Alert>
+      </Snackbar>
+    </>
+  );
+};
