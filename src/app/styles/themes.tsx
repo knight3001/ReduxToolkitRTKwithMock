@@ -1,12 +1,12 @@
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createTheme } from "@material-ui/core/styles";
 
 const basePalette = {};
 
-const baseTheme = createMuiTheme({
+const baseTheme = createTheme({
   overrides: {},
 });
 
-export const myTheme = createMuiTheme({
+export const myTheme = createTheme({
   ...baseTheme,
   palette: {
     ...basePalette,
