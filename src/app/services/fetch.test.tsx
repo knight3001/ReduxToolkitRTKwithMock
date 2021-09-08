@@ -41,7 +41,7 @@ test("loads and displays greeting", async () => {
 
   await waitFor(() =>
     // getByRole throws an error if it cannot find an element
-    screen.getByRole("heading")
+    screen.getByRole("heading", { level: 1 })
   );
 
   // assert that the alert message is correct using

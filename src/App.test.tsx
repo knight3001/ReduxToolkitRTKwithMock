@@ -1,16 +1,17 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import { render } from "@testing-library/react";
 import { screen } from "@testing-library/dom";
-import { ApiProvider } from "@reduxjs/toolkit/query/react";
-import { api } from "./app/services/posts";
-import PageRoute from "./app/navs/PageRoute";
+
+import App from "./App";
+
+test("render without crashing", () => {
+  const div = document.createElement("div");
+  ReactDOM.render(<App />, div);
+});
 
 test("renders manage posts title", () => {
-  const { getByText } = render(
-    <ApiProvider api={api}>
-      <PageRoute />
-    </ApiProvider>
-  );
+  const { getByText } = render(<App />);
 
   expect(getByText("Manage Posts")).toBeInTheDocument();
 });
