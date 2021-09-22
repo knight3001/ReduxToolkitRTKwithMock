@@ -25,3 +25,59 @@ test("use jest-dom", () => {
   expect(screen.queryByTestId("not-empty")).not.toBeEmptyDOMElement();
   expect(screen.getByText("Visible Example")).toBeVisible();
 });
+
+beforeAll(() => console.log("1 - beforeAll"));
+afterAll(() => console.log("1 - afterAll"));
+beforeEach(() => console.log("1 - beforeEach"));
+afterEach(() => console.log("1 - afterEach"));
+test("", () => console.log("1 - test"));
+describe("Scoped / Nested block", () => {
+  beforeAll(() => console.log("2 - beforeAll"));
+  afterAll(() => console.log("2 - afterAll"));
+  beforeEach(() => console.log("2 - beforeEach"));
+  afterEach(() => console.log("2 - afterEach"));
+  test("", () => console.log("2 - test"));
+});
+
+// 1 - beforeAll
+// 1 - beforeEach
+// 1 - test
+// 1 - afterEach
+// 2 - beforeAll
+// 1 - beforeEach
+// 2 - beforeEach
+// 2 - test
+// 2 - afterEach
+// 1 - afterEach
+// 2 - afterAll
+// 1 - afterAll
+
+test("renders manage posts title", () => {
+  function forEach(items, callback) {
+    for (let index = 0; index < items.length; index++) {
+      callback(items[index]);
+    }
+  }
+
+  const mockCallback = jest.fn((x) => x + 42);
+  forEach([0, 1], mockCallback);
+
+  expect(mockCallback.mock.calls.length).toBe(2);
+
+  expect(mockCallback.mock.calls[0][0]).toBe(0);
+
+  expect(mockCallback.mock.calls[1][0]).toBe(1);
+
+  expect(mockCallback.mock.results[0].value).toBe(42);
+});
+
+const myMockFn = jest
+  .fn()
+  .mockImplementationOnce(cb => cb(null, true))
+  .mockImplementationOnce(cb => cb(null, false));
+
+myMockFn((err, val) => console.log(val));
+// > true
+
+myMockFn((err, val) => console.log(val));
+// > false
