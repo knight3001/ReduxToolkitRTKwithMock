@@ -18,3 +18,17 @@ test("Link changes the class when hovered", () => {
   tree = component.toJSON();
   expect(tree).toMatchSnapshot();
 });
+
+test("will check the matchers and pass", () => {
+  const user = {
+    createdAt: new Date(),
+    id: Math.floor(Math.random() * 20),
+    name: "Lebron James",
+  };
+
+  expect(user).toMatchSnapshot({
+    createdAt: expect.any(Date),
+    id: expect.any(Number),
+    name: "Lebron James",
+  });
+});
