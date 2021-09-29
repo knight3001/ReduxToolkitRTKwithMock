@@ -1,4 +1,3 @@
-import { MdBook } from "react-icons/md";
 import React from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
 import List from "@mui/material/List";
@@ -11,6 +10,7 @@ import Paper from "@mui/material/Paper";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 import { green } from "@mui/material/colors";
+import BookIcon from "@mui/icons-material/Book";
 
 import { useGetPostQuery, useGetPostsQuery } from "../../app/services/posts";
 import { PostDetail } from "./PostDetail";
@@ -37,7 +37,7 @@ const PostList = () => {
       {posts.map(({ id, name }) => (
         <ListItemLink key={id} href={`/posts/${id}`}>
           <ListItemIcon>
-            <MdBook style={{ color: green[500] }} />
+            <BookIcon style={{ color: green[500] }} />
           </ListItemIcon>
           <ListItemText primary={name} />
         </ListItemLink>
@@ -57,7 +57,7 @@ const PostNameSubscribed = ({ id }: { id: string }) => {
   return (
     <ListItem key={id} onClick={() => push(`/posts/${id}`)}>
       <ListItemIcon>
-        <MdBook style={{ color: green[500] }} />
+        <BookIcon style={{ color: green[500] }} />
       </ListItemIcon>
       <ListItemText primary={data.name} />
     </ListItem>
