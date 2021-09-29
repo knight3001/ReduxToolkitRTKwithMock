@@ -1,12 +1,19 @@
 // Link.react.js
 import React, { useState } from "react";
+import { RouteComponentProps } from "react-router-dom";
 
 const STATUS = {
   HOVERED: "hovered",
   NORMAL: "normal",
 };
 
-const Link = ({ page, children }) => {
+const Link = ({
+  page,
+  children,
+}: {
+  page: string;
+  children: RouteComponentProps;
+}) => {
   const [status, setStatus] = useState(STATUS.NORMAL);
 
   const onMouseEnter = () => {
