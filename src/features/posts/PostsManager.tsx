@@ -1,5 +1,11 @@
 import React from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
+import {
+  Route,
+  Switch,
+  useHistory,
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+} from "react-router-dom";
 import List from "@mui/material/List";
 import ListItem, { ListItemProps } from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -16,8 +22,37 @@ import { useGetPostQuery, useGetPostsQuery } from "../../app/services/posts";
 import { PostDetail } from "./PostDetail";
 import AddPost from "./AddPost";
 
-function ListItemLink(props: ListItemProps<"a", { button?: true }>) {
-  return <ListItem button component="a" {...props} />;
+interface ListItemLinkProps {
+  icon?: React.ReactElement;
+  primary: string;
+  to: string;
+}
+
+function ListItemLink(props: ListItemLinkProps) {
+  const { icon, primary, to } = props;
+
+  const renderLink = React.useMemo(
+    () =>
+      React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
+        function Link(itemProps, ref) {
+          return (
+            <RouterLink to={to} ref={ref} {...itemProps} role={undefined} />
+          );
+        }
+      ),
+    [to]
+  );
+
+  return (
+    <li>
+      <ListItem button component={renderLink}>
+        {icon ? (
+          <ListItemIcon style={{ color: green[500] }}>{icon}</ListItemIcon>
+        ) : null}
+        <ListItemText primary={primary} />
+      </ListItem>
+    </li>
+  );
 }
 
 const PostList = () => {
@@ -35,12 +70,12 @@ const PostList = () => {
   return (
     <List>
       {posts.map(({ id, name }) => (
-        <ListItemLink key={id} href={`/posts/${id}`}>
-          <ListItemIcon>
-            <BookIcon style={{ color: green[500] }} />
-          </ListItemIcon>
-          <ListItemText primary={name} />
-        </ListItemLink>
+        <ListItemLink
+          key={id}
+          to={`/posts/${id}`}
+          primary={name}
+          icon={<BookIcon />}
+        />
       ))}
     </List>
   );
