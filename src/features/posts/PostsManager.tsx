@@ -1,16 +1,16 @@
 import { MdBook } from "react-icons/md";
 import React from "react";
 import { Route, Switch, useHistory } from "react-router-dom";
-import List from "@material-ui/core/List";
-import ListItem, { ListItemProps } from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Divider from "@material-ui/core/Divider";
-import Typography from "@material-ui/core/Typography";
-import { green } from "@material-ui/core/colors";
+import List from "@mui/material/List";
+import ListItem, { ListItemProps } from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import { green } from "@mui/material/colors";
 
 import { useGetPostQuery, useGetPostsQuery } from "../../app/services/posts";
 import { PostDetail } from "./PostDetail";

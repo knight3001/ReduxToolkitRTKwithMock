@@ -1,6 +1,6 @@
-import { styled } from "@material-ui/core/styles";
-import { compose, spacing, borders } from "@material-ui/system";
-import MuiButton from "@material-ui/core/Button";
+import { styled } from "@mui/material/styles";
+import { compose, spacing, borders } from "@mui/system";
+import MuiButton from "@mui/material/Button";
 
 const Button = styled(MuiButton)(compose(spacing, borders));
 
