@@ -28,7 +28,29 @@ interface ListItemLinkProps {
   to: string;
 }
 
-function ListItemLink(props: ListItemLinkProps) {
+function ListItemLink(
+  props: ListItemProps<"a", { button?: true }> & { to: string }
+) {
+  const renderLink = React.useMemo(
+    () =>
+      React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
+        function Link(itemProps, ref) {
+          return (
+            <RouterLink
+              to={props.to}
+              ref={ref}
+              {...itemProps}
+              role={undefined}
+            />
+          );
+        }
+      ),
+    [props.to]
+  );
+
+  return <ListItem button component={renderLink} {...props} />;
+}
+/* function ListItemLink(props: ListItemLinkProps) {
   const { icon, primary, to } = props;
 
   const renderLink = React.useMemo(
@@ -53,7 +75,7 @@ function ListItemLink(props: ListItemLinkProps) {
       </ListItem>
     </li>
   );
-}
+} */
 
 const PostList = () => {
   const { data: posts, isLoading } = useGetPostsQuery();
@@ -70,12 +92,18 @@ const PostList = () => {
   return (
     <List>
       {posts.map(({ id, name }) => (
-        <ListItemLink
+        <ListItemLink key={id} to={`/posts/${id}`}>
+          <ListItemIcon>
+            <BookIcon style={{ color: green[500] }} />
+          </ListItemIcon>
+          <ListItemText primary={name} />
+        </ListItemLink>
+        /*  <ListItemLink
           key={id}
           to={`/posts/${id}`}
           primary={name}
           icon={<BookIcon />}
-        />
+        /> */
       ))}
     </List>
   );

@@ -1,7 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import { ThemeProvider } from "@mui/material/styles";
 import { myTheme } from "../../app/styles/themes";
+
+const style = {
+  flexDirection: "column",
+} as const;
 
 export default function CustomBreakpoints() {
   return (
@@ -16,6 +21,7 @@ export default function CustomBreakpoints() {
       >
         This box has a responsive width
       </Box>
+      <Button sx={style}>Example</Button>
     </ThemeProvider>
   );
 }
